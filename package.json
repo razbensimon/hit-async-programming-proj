@@ -1,0 +1,19 @@
+{
+  "name": "hit-async-programming-proj",
+  "version": "1.0.0",
+  "description": "cost manager RESTfull API project with MongoDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/razbensimon/hit-async-programming-proj.git"
+  },
+  "author": "Raz & Lior",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/razbensimon/hit-async-programming-proj/issues"
+  },
+  "homepage": "https://github.com/razbensimon/hit-async-programming-proj#readme"
+}
