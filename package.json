@@ -1,23 +1,22 @@
 {
   "name": "hit-async-programming-proj",
+  "author": "Raz & Lior",
   "version": "1.0.0",
+  "license": "ISC",
   "description": "cost manager RESTful API project with MongoDB",
   "main": "src/server.js",
+  "engines": {
+    "node": "16.14.x",
+    "npm": "8.7.x"
+  },
   "scripts": {
     "start": "node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/razbensimon/hit-async-programming-proj.git"
+  "lint-staged": {
+    "{**/*,*}.{js,ts,jsx,tsx}": "prettier --write --ignore-unknown"
   },
-  "author": "Raz & Lior",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/razbensimon/hit-async-programming-proj/issues"
-  },
-  "homepage": "https://github.com/razbensimon/hit-async-programming-proj#readme",
   "dependencies": {
     "express": "^4.17.3"
   },
@@ -26,11 +25,12 @@
     "lint-staged": "^12.4.0",
     "prettier": "2.6.2"
   },
-  "lint-staged": {
-    "{**/*,*}.{js,ts,jsx,tsx}": "prettier --write --ignore-unknown"
+  "homepage": "https://github.com/razbensimon/hit-async-programming-proj#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/razbensimon/hit-async-programming-proj.git"
   },
-  "engines": {
-    "node": "16.14.x",
-    "npm": "8.7.x"
+  "bugs": {
+    "url": "https://github.com/razbensimon/hit-async-programming-proj/issues"
   }
 }
