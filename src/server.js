@@ -6,8 +6,17 @@ app.post('/api/costs', (req, res) => {
   res.status(201).send('Hello World!');
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
+});
+
+['SIGINT', 'SIGTERM'].forEach(signal => {
+  process.on(signal, () => {
+    console.log(signal + ' signal received: closing HTTP server');
+    server.close(() => {
+      console.log('HTTP server closed');
+    });
+  });
 });
 
 class UserModel {
@@ -25,4 +34,4 @@ class CostItemModel {
   description;
 }
 
-module.exports = { app };
+module.exports = { app, server };
