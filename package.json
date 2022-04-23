@@ -28,5 +28,9 @@
   },
   "lint-staged": {
     "{**/*,*}.{js,ts,jsx,tsx}": "prettier --write --ignore-unknown"
+  },
+  "engines": {
+    "node": "16.14.x",
+    "npm": "8.7.x"
   }
 }
