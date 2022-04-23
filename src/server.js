@@ -2,8 +2,10 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+
 app.post('/api/costs', (req, res) => {
-  res.status(201).send('Hello World!');
+  res.status(201).send();
 });
 
 const server = app.listen(port, () => {

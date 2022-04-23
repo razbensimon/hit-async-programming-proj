@@ -18,7 +18,8 @@
     "{**/*,*}.{js,ts,jsx,tsx}": "prettier --write --ignore-unknown"
   },
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "http-status-codes": "^2.2.0"
   },
   "devDependencies": {
     "husky": "^7.0.4",

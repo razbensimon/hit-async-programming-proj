@@ -1,18 +1,21 @@
 const request = require('supertest');
 const { app, server } = require('../server');
+const { StatusCodes } = require('http-status-codes');
 
 describe('Cost', () => {
-  it('should create a new post', async () => {
+  it('should create a new cost item', async () => {
     // arrange
+    const costItem = {
+      sum: 57,
+      category: 'food',
+      description: 'Schawarma'
+    };
 
     // act
-    const res = await request(app).post('/api/costs').send({
-      userId: 1,
-      title: 'test is cool'
-    });
+    const res = await request(app).post('/api/costs').send(costItem);
 
     // assert
-    expect(res.statusCode).toEqual(201);
+    expect(res.statusCode).toEqual(StatusCodes.CREATED);
   });
 });
 
