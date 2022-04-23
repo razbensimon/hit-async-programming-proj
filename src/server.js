@@ -4,8 +4,16 @@ const port = 3000;
 
 app.use(express.json());
 
+app.post('/api/users', (req, res) => {
+  res.status(201).send();
+});
+
 app.post('/api/costs', (req, res) => {
   res.status(201).send();
+});
+
+app.get('/api/report', (req, res) => {
+  res.status(200).send();
 });
 
 const server = app.listen(port, () => {
