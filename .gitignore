@@ -11,7 +11,7 @@ pids
 *.pid
 *.seed
 *.pid.lock
-
+setenv.sh
 
 # Dependency directories
 node_modules/
