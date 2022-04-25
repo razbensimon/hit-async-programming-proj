@@ -77,8 +77,6 @@ const ajv = new Ajv();
 const validate = ajv.compile(reportSchema);
 
 app.get('/api/report', async (req, res) => {
-  console.log(req.body);
-  console.log(req.query);
   if (!validate(req.query)) {
     console.log(validate.errors);
     res.status(StatusCodes.BAD_REQUEST).send();
@@ -86,46 +84,40 @@ app.get('/api/report', async (req, res) => {
   }
 
   const { user_id, year, month } = req.query;
-  console.log(user_id, year, month);
+  let query = {
+    $expr: {
+      $and: [
+        {
+          $eq: [
+            {
+              $year: '$date'
+            },
+            year
+          ]
+        },
+        {
+          user_id: user_id
+        }
+      ]
+    }
+  };
 
-  let results;
   if (month) {
-    results = await Cost.find({
-      $expr: {
-        $and: [
-          {
-            $eq: [
-              {
-                $month: '$date'
-              },
-              month
-            ]
-          },
-          {
-            $eq: [
-              {
-                $year: '$date'
-              },
-              year
-            ]
-          }
-        ]
-      }
-    });
-  } else {
-    results = await Cost.find({
-      $expr: {
-        $eq: [
-          {
-            $year: '$date'
-          },
-          year
-        ]
-      }
+    // Adding the desired month to the query only if provided in query parameters
+    query?.$expr?.$and.push({
+      $eq: [
+        {
+          $month: '$date'
+        },
+        month
+      ]
     });
   }
 
-  console.log(results.length);
+  console.log(query?.$expr?.$and);
+
+  let results = await Cost.find(query);
+  console.log(results.length, 'documents matched the query');
   res.status(StatusCodes.OK).send();
 });
 

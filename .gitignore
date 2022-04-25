@@ -11,6 +11,7 @@ pids
 *.pid
 *.seed
 *.pid.lock
+debug/
 setenv.sh
 
 # Dependency directories
