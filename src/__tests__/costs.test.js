@@ -24,7 +24,7 @@ describe('Cost', () => {
   it('Should create a new cost item', async () => {
     // arrange
     const costItem = {
-      sum: 57,
+      price: 57,
       category: 'food',
       description: 'Schawarma'
     };
@@ -41,7 +41,7 @@ describe('Report', () => {
   it('Should get costs report for user in specific month and year', async () => {
     // arrange
     const reportDetails = {
-      user_id: 'aaaaaa',
+      user_id: 'TempUserID',
       month: '1',
       year: '1970'
     };

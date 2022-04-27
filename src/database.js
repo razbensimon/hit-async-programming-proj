@@ -16,7 +16,7 @@ const User = mongoose.model('User', {
 const Cost = mongoose.model('Cost', {
   user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
   date: { type: Date, required: false, default: Date.now },
-  sum: { type: Number, required: true },
+  price: { type: Number, required: true },
   category: { type: String, required: true },
   description: { type: String, required: true }
 });

@@ -32,7 +32,7 @@ app.post('/api/users', async (req, res) => {
 });
 
 app.post('/api/costs', async (req, res) => {
-  const { user_id, sum, date, category, description } = req.body;
+  const { user_id, date, price, category, description } = req.body;
 
   try {
     await User.findById(user_id).exec();
@@ -44,8 +44,8 @@ app.post('/api/costs', async (req, res) => {
 
   const cost = new Cost({
     user_id,
-    sum,
     date,
+    price,
     category,
     description
   });
@@ -111,7 +111,7 @@ app.get('/api/report', async (req, res) => {
           category: '$category'
         },
         TotalAmount: {
-          $sum: '$sum'
+          $sum: '$price'
         },
         Category: {
           $first: '$category'
