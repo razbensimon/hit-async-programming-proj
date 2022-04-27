@@ -2,6 +2,7 @@ const express = require('express');
 const Ajv = require('ajv');
 const { StatusCodes } = require('http-status-codes');
 const { User, Cost } = require('./database');
+const mongoose = require('mongoose');
 const app = express();
 const port = 3000;
 
@@ -83,41 +84,42 @@ app.get('/api/report', async (req, res) => {
     return;
   }
 
-  const { user_id, year, month } = req.query;
-  let query = {
-    $expr: {
-      $and: [
-        {
-          $eq: [
-            {
-              $year: '$date'
-            },
-            year
-          ]
-        },
-        {
-          user_id: user_id
-        }
-      ]
-    }
+  let { user_id, year, month } = req.query;
+
+  let matchQuery = {
+    user_id: mongoose.Types.ObjectId(user_id),
+    year: Number(year)
   };
 
   if (month) {
-    // Adding the desired month to the query only if provided in query parameters
-    query?.$expr?.$and.push({
-      $eq: [
-        {
-          $month: '$date'
-        },
-        month
-      ]
-    });
+    matchQuery.month = Number(month);
   }
 
-  console.log(query?.$expr?.$and);
-
-  let results = await Cost.find(query);
-  console.log(results.length, 'documents matched the query');
+  let results = await Cost.aggregate([
+    {
+      $addFields: {
+        year: { $year: '$date' },
+        month: { $month: '$date' }
+      }
+    },
+    {
+      $match: matchQuery
+    },
+    {
+      $group: {
+        _id: {
+          category: '$category'
+        },
+        TotalAmount: {
+          $sum: '$sum'
+        },
+        Category: {
+          $first: '$category'
+        }
+      }
+    }
+  ]);
+  console.log(results);
   res.status(StatusCodes.OK).send();
 });
 
