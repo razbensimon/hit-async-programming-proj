@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "test": "jest --detectOpenHandles",
+    "test": "jest --detectOpenHandles --runInBand",
     "prepare": "husky install"
   },
   "lint-staged": {
@@ -27,6 +27,7 @@
     "husky": "^7.0.4",
     "jest": "^27.5.1",
     "lint-staged": "^12.4.0",
+    "mongodb-memory-server": "^8.5.2",
     "prettier": "2.6.2",
     "supertest": "^6.2.2"
   },

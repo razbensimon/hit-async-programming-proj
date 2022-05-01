@@ -86,8 +86,16 @@ app.get('/api/report', async (req, res) => {
 
   let { user_id, year, month } = req.query;
 
+  try {
+    user_id = mongoose.Types.ObjectId(user_id);
+  } catch (err) {
+    console.error('user_id is not valid');
+    res.status(StatusCodes.BAD_REQUEST).send();
+    return;
+  }
+
   let matchQuery = {
-    user_id: mongoose.Types.ObjectId(user_id),
+    user_id: user_id,
     year: Number(year)
   };
 
@@ -120,7 +128,7 @@ app.get('/api/report', async (req, res) => {
     }
   ]);
   console.log(results);
-  res.status(StatusCodes.OK).send();
+  res.status(StatusCodes.OK).json(results);
 });
 
 const server = app.listen(port, () => {
