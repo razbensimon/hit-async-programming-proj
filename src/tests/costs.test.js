@@ -1,6 +1,6 @@
 const request = require('supertest');
 const { StatusCodes } = require('http-status-codes');
-const dbHandler = require('./db-handler');
+const dbHandler = require('./memory-db-util');
 const { app, server } = require('../server');
 const { User } = require('../database');
 
@@ -76,7 +76,7 @@ describe('API Tests', () => {
 
     it('Should create a new cost item', async () => {
       // arrange
-      await prepareDbWithData();
+      const { user } = await prepareDbWithData();
       const costItem = {
         price: 57,
         category: 'food',
