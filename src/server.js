@@ -110,20 +110,25 @@ app.get('/api/report', async (req, res) => {
         month: { $month: '$date' }
       }
     },
-    {
-      $match: matchQuery
-    },
+    { $match: matchQuery },
     {
       $group: {
-        _id: {
-          category: '$category'
-        },
-        TotalAmount: {
-          $sum: '$price'
-        },
-        Category: {
-          $first: '$category'
-        }
+        _id: '$category',
+        count: { $sum: 1 },
+        totalPrice: { $sum: '$price' }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        category: '$_id',
+        count: 1,
+        totalPrice: 1
+      }
+    },
+    {
+      $sort: {
+        totalPrice: -1
       }
     }
   ]);
