@@ -1,4 +1,4 @@
 #!/bin/bash
 
-npm install
-npm start
+/usr/bin/npm install --ignore-scripts
+/usr/bin/npm start

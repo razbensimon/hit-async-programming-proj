@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('../swagger_output.json');
 const app = express();
-const port = process.env.BACKEND_PORT || 3000;
+const port = 3000;
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use(express.json());

@@ -31,3 +31,25 @@ jobs:
 
       - name: Test connectivity
         run: ssh -i hit-async-proj-key.pem ec2-user@54.221.33.134 ls
+
+      - name: Run unit tests
+        run: |
+          ssh -i hit-async-proj-key.pem ec2-user@54.221.33.134
+          "cd /usr/local/src/hit-async-programming-proj &&
+          #git pull &&
+          cd backend &&
+          npm install --ignore-scripts &&
+          npm test"
+
+      - name: Deploy services
+        run: |
+          ssh -i hit-async-proj-key.pem ec2-user@54.221.33.134
+          "cd /usr/local/src/hit-async-programming-proj
+          #git pull
+          docker stop backend
+          docker stop frontend
+          docker build -t backend_image . -f Dockerfile.backend
+          docker build -t backend_image . -f Dockerfile.frontend
+          docker image prune -f
+          docker run -dit --name backend backend_image
+          docker run -dit --name frontend frontend_image"
