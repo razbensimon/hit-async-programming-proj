@@ -11,7 +11,6 @@ const User = mongoose.model('User', {
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
   birthday: { type: Date, required: true },
-  //  phone: { type: String, required: true },
   martial_status: { type: String, required: true }
 });
 
