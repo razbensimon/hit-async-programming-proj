@@ -1,0 +1,55 @@
+name: Deploy backend and frontend on AWS EC2
+
+# Controls when the action will run.
+# Triggers the workflow on push to all branches exepct main
+# Workflow must pass in order to make pull request to main
+on:
+  push:
+    branches:
+      - '*'
+      #- '!main'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    strategy:
+      matrix:
+        python-version: [3.9.10]
+    runs-on: ubuntu-latest
+    env:
+      SSH_PEM: ${{ secrets.SSH_PEM }}
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Fetch code
+        uses: actions/checkout@v2
+
+      - name: Prepare runner
+        run: |
+          echo $SSH_PEM > hit-async-proj-key.pem
+          chmod 400 hit-async-proj-key.pem
+
+      - name: Test connectivity
+        run: ssh -i hit-async-proj-key.pem ec2-user@54.221.33.134 ls
+
+      - name: Run unit tests
+        run: |
+          ssh -i hit-async-proj-key.pem ec2-user@54.221.33.134
+          "cd /usr/local/src/hit-async-programming-proj &&
+          #git pull &&
+          cd backend &&
+          npm install --ignore-scripts &&
+          npm test"
+
+      - name: Deploy services
+        run: |
+          ssh -i hit-async-proj-key.pem ec2-user@54.221.33.134
+          "cd /usr/local/src/hit-async-programming-proj
+          #git pull
+          docker stop backend
+          docker stop frontend
+          docker build -t backend_image . -f Dockerfile.backend
+          docker build -t backend_image . -f Dockerfile.frontend
+          docker image prune -f
+          docker run -dit --name backend backend_image
+          docker run -dit --name frontend frontend_image"
