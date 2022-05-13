@@ -26,11 +26,13 @@ jobs:
 
       - name: Prepare runner
         run: |
+          echo $$SSH_PEM
           echo $SSH_PEM > hit-async-proj-key.pem
           chmod 400 hit-async-proj-key.pem
+          ls -ltr
 
       - name: Test connectivity
-        run: ssh -i hit-async-proj-key.pem ec2-user@54.221.33.134 ls
+        run: ssh -i hit-async-proj-key.pem -o "StrictHostKeyChecking no" ec2-user@54.173.48.224 "ls -ltr"
 
       - name: Run unit tests
         run: |
