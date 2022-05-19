@@ -8,7 +8,7 @@ async function prepareDbWithData(costItems) {
   const user = new User({
     first_name: 'mock',
     last_name: 'mock',
-    birthday: new Date(),
+    birth_date: new Date(),
     martial_status: 'mock'
   });
   await user.save();
@@ -42,7 +42,7 @@ describe('API Tests', () => {
       const userItem = {
         first_name: 'Israel',
         last_name: 'Israeli',
-        birthday: '1/1/1970',
+        birth_date: '1/1/1970',
         martial_status: 'Single'
       };
 

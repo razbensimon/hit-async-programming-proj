@@ -5,7 +5,7 @@
     "title": "Costs manager API",
     "description": "RESTful API service for costs management"
   },
-  "host": "http://ec2-54-221-33-134.compute-1.amazonaws.com:3000",
+  "host": "ec2-54-221-33-134.compute-1.amazonaws.com:3000",
   "paths": {
     "/api/users": {
       "post": {
@@ -32,7 +32,7 @@
                   "required": "true",
                   "example": "Single"
                 },
-                "birthday": {
+                "birth_date": {
                   "type": "string",
                   "required": "true",
                   "example": "1990-06-01"

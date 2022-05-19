@@ -8,15 +8,23 @@ const swaggerFile = require('../swagger_output.json');
 const app = express();
 const port = 3000;
 
+const allowCrossDomain = function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+}
+
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use(allowCrossDomain);
 app.use(express.json());
 
 app.post('/api/users', async (req, res) => {
-  const { first_name, last_name, martial_status, birthday } = req.body;
+  const { first_name, last_name, martial_status, birth_date } = req.body;
   const user = new User({
     first_name,
     last_name,
-    birthday,
+    birth_date,
     martial_status
   });
 

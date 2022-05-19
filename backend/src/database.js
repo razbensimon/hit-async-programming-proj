@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'test') {
 const User = mongoose.model('User', {
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
-  birthday: { type: Date, required: true },
+  birth_date: { type: Date, required: true },
   martial_status: { type: String, required: true }
 });
 
