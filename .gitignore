@@ -13,6 +13,7 @@ pids
 *.pid.lock
 debug/
 setenv.sh
+setenv.bat
 
 # Dependency directories
 node_modules/

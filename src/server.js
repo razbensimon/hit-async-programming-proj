@@ -3,24 +3,35 @@ const Ajv = require('ajv');
 const { StatusCodes } = require('http-status-codes');
 const { User, Cost } = require('./database');
 const mongoose = require('mongoose');
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('../swagger_output.json');
 const app = express();
 const port = 3000;
 
+const allowCrossDomain = function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+};
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use(allowCrossDomain);
 app.use(express.json());
 
 app.post('/api/users', async (req, res) => {
-  const { first_name, last_name, martial_status, birthday } = req.body;
+  const { first_name, last_name, martial_status, birth_date } = req.body;
   const user = new User({
     first_name,
     last_name,
-    birthday,
+    birth_date,
     martial_status
   });
 
   try {
     await user.save();
     console.log('User with ID', user._id.toString(), 'created');
-    res.status(StatusCodes.CREATED).send();
+    res.status(StatusCodes.CREATED).send(user._id.toString());
   } catch (err) {
     console.error(err);
     if (err?.name === 'ValidationError') {
@@ -103,37 +114,45 @@ app.get('/api/report', async (req, res) => {
     matchQuery.month = Number(month);
   }
 
-  let results = await Cost.aggregate([
-    {
-      $addFields: {
-        year: { $year: '$date' },
-        month: { $month: '$date' }
+  try {
+    let results = await Cost.aggregate([
+      {
+        $addFields: {
+          year: { $year: '$date' },
+          month: { $month: '$date' }
+        }
+      },
+      { $match: matchQuery },
+      {
+        $group: {
+          _id: '$category',
+          count: { $sum: 1 },
+          totalPrice: { $sum: '$price' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          category: '$_id',
+          count: 1,
+          totalPrice: 1
+        }
+      },
+      {
+        $sort: {
+          totalPrice: -1
+        }
       }
-    },
-    { $match: matchQuery },
-    {
-      $group: {
-        _id: '$category',
-        count: { $sum: 1 },
-        totalPrice: { $sum: '$price' }
-      }
-    },
-    {
-      $project: {
-        _id: 0,
-        category: '$_id',
-        count: 1,
-        totalPrice: 1
-      }
-    },
-    {
-      $sort: {
-        totalPrice: -1
-      }
+    ]);
+    res.status(StatusCodes.OK).json(results);
+  } catch (err) {
+    console.error(err);
+    if (err?.name === 'ValidationError') {
+      res.status(StatusCodes.BAD_REQUEST).send();
+    } else {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
-  ]);
-  console.log(results);
-  res.status(StatusCodes.OK).json(results);
+  }
 });
 
 const server = app.listen(port, () => {
