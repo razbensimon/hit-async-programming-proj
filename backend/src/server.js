@@ -43,7 +43,8 @@ app.post('/api/users', async (req, res) => {
 });
 
 app.post('/api/costs', async (req, res) => {
-  const { user_id, date, price, category, description } = req.body;
+  const { user_id, date, price, description } = req.body;
+  let category = req.body.category.toLowerCase();
 
   try {
     await User.findById(user_id).exec();

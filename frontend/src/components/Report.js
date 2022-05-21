@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
+import Chart from 'chart.js/auto';
 
 function Report() {
     const [reportResult, setReportResult] = useState();
@@ -13,13 +14,15 @@ function Report() {
         event.preventDefault();
 
         let formData = {
-            user_id: event.target.user_id.value,
-            year: event.target.year.value
+            user_id: event.target.user_id.value
         };
 
-        let month = event.target.month.value;
-        if (month) {
-            formData.month = month;
+        if (event.target.year.value) {
+            formData.year = event.target.year.value;
+        }
+
+        if (event.target.month.value) {
+            formData.month = event.target.month.value;
         }
 
         try {
@@ -30,7 +33,6 @@ function Report() {
                 headers: {"Content-Type": "application/json"},
             });
             console.log(response);
-            //setReportResult("Costs report successfully generated for user  " + formData.user_id);
 
             const result = {};
             for (let i=0; i < response.data.length; i++) {
@@ -39,18 +41,16 @@ function Report() {
                 delete response.data[i].count;
                 result[category] = response.data[i];
             }
-            console.log(result);
+
             const labels = Object.keys(result);
             const totalPrice = labels.map(label => result[label].totalPrice);
-            console.log("labels: " + labels);
-            console.log("total prices: " + totalPrice);
 
             setBarChartResult({
                 labels: labels,
                 datasets: [{
                     data: totalPrice,
                     label: "Total Price",
-                    backgroundColor: "orange",
+                    backgroundColor: "#344440",
                     fill: true
                 }]
             });
@@ -71,8 +71,8 @@ function Report() {
                     <div className="col-lg-6">
                         <h1 className="font-weight-light">Get costs report</h1><br/>
                         <form onSubmit={handleReportSubmit}>
-                            User ID: <input name="user_id" type="text" placeholder="User ID" size="26" /><br/><br/>
-                            Year: <input name="year" type="text" placeholder="YYYY" /><br/><br/>
+                            User ID: <input name="user_id" type="text" placeholder="User ID" size="26" required /><br/><br/>
+                            Year: <input name="year" type="text" placeholder="YYYY" required /><br/><br/>
                             Month (optional): <input name="month" type="text" placeholder="MM" /><br/><br/>
                             <input type="submit" value="Get report" />
                         </form>
