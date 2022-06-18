@@ -27,6 +27,7 @@ jobs:
 
       - name: Prepare runner
         run: |
+          echo $SSH_PEM
           echo $SSH_PEM > async-project_key.pem && chmod 400 async-project_key.pem 
           ls -ltr
 
