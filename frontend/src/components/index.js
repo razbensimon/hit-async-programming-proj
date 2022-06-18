@@ -1,4 +1,4 @@
-export { default as Navigation } from "./Navigation";
-export { default as Footer } from "./Footer";
-export { default as Home } from "./Home";
-export { default as Report } from "./Report";
+export { default as Navigation } from "./navigation";
+export { default as Footer } from "./footer";
+export { default as Home } from "./home";
+export { default as Report } from "./report";

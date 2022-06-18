@@ -1,7 +1,11 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
+  "author": "Raz & Lior & Or",
+  "version": "1.0.0",
+  "engines": {
+    "node": "16.14.x",
+    "npm": "8.7.x"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",

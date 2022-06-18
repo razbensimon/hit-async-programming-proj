@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SSH_PEM: ${{ secrets.SSH_PEM }}
+      SERVER_ADDRESS : ${{ secrets.SERVER_ADDRESS }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -26,32 +27,23 @@ jobs:
 
       - name: Prepare runner
         run: |
-          echo $SSH_PEM
-          echo $SSH_PEM > hit-async-proj-key.pem
-          chmod 400 hit-async-proj-key.pem
+          echo $SSH_PEM > async-project_key.pem && chmod 400 async-project_key.pem 
           ls -ltr
 
       - name: Test connectivity
-        run: ssh -i hit-async-proj-key.pem -o "StrictHostKeyChecking no" ec2-user@54.173.48.224 "ls -ltr"
+        run: ssh -i async-project_key.pem -o "StrictHostKeyChecking no" ubuntu@$SERVER_ADDRESS "ls -ltr"
 
       - name: Run unit tests
         run: |
-          ssh -i hit-async-proj-key.pem ec2-user@54.221.33.134
-          "cd /usr/local/src/hit-async-programming-proj &&
-          #git pull &&
-          cd backend &&
+          ssh -i async-project_key.pem ubuntu@$SERVER_ADDRESS
+          "cd /usr/src/app/hit-async-programming-proj/backend &&
           npm install --ignore-scripts &&
           npm test"
 
       - name: Deploy services
         run: |
-          ssh -i hit-async-proj-key.pem ec2-user@54.221.33.134
-          "cd /usr/local/src/hit-async-programming-proj
-          #git pull
-          docker stop backend
-          docker stop frontend
-          docker build -t backend_image . -f Dockerfile.backend
-          docker build -t backend_image . -f Dockerfile.frontend
-          docker image prune -f
-          docker run -dit --name backend backend_image
-          docker run -dit --name frontend frontend_image"
+          ssh -i async-project_key.pem ubuntu@$SERVER_ADDRESS
+          "systemctl restart backend && 
+          systemctl restart frontend &&
+          systemctl status backend &&
+          systemctl status frontend"
