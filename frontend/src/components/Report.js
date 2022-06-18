@@ -7,14 +7,14 @@ function Report() {
   const [reportResult, setReportResult] = useState();
   const [barChartResult, setBarChartResult] = useState({
     labels: [],
-    datasets: [],
+    datasets: []
   });
 
   const handleReportSubmit = async (event) => {
     event.preventDefault();
 
     let formData = {
-      user_id: event.target.user_id.value,
+      user_id: event.target.user_id.value
     };
 
     if (event.target.year.value) {
@@ -26,18 +26,15 @@ function Report() {
     }
 
     try {
-      const response = await axios({
-        method: "get",
-        url: "http://localhost:3000/api/report",
-        params: formData,
-        headers: { "Content-Type": "application/json" },
+      const response = await axios.get("http://localhost:3000/api/report", {
+        params: formData
       });
       console.log(response);
 
       const barChartData = response.data.map((item) => {
         return {
           display: `${item.category} (${item.count})`,
-          totalPrice: item.totalPrice,
+          totalPrice: item.totalPrice
         };
       });
 
@@ -51,9 +48,9 @@ function Report() {
             data: totalPrice,
             label: "Total Price",
             backgroundColor: "#344440",
-            fill: true,
-          },
-        ],
+            fill: true
+          }
+        ]
       });
     } catch (error) {
       if (error.response.status === 400) {
