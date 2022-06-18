@@ -7,12 +7,12 @@ Or Gelkop - 206895336
 ## Background
 This system is a cost manager RESTful API system, developed with NodeJS and Express framework.  
 It includes also a frontend application, using React.  
-The system is deployed on AWS, and accessible through this link:  
+The system is deployed on Azure cloud, and accessible through this link:  
 Frontend - http://20.247.96.56/   
-Backend - http://20.247.96.56:3000/docs  
+Backend - http://20.247.96.56:3000  
 
 For API usage reference, visit the Swagger page:  
-http://ec2-54-221-33-134.compute-1.amazonaws.com:3000/docs
+http://20.247.96.56:3000/docs  
 
 ## Disclaimers
 If it was production grade system, of course that I would have use certificates for HTTPS, but we skipped this 

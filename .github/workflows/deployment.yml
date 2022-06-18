@@ -17,7 +17,7 @@ jobs:
         python-version: [3.9.10]
     runs-on: ubuntu-latest
     env:
-      SSH_PEM: ${{ secrets.SSH_PEM }}
+      #SSH_PEM: ${{ secrets.SSH_PEM }}
       SERVER_ADDRESS : ${{ secrets.SERVER_ADDRESS }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -27,23 +27,23 @@ jobs:
 
       - name: Prepare runner
         run: |
-          echo $SSH_PEM
-          echo $SSH_PEM > async-project_key.pem && chmod 400 async-project_key.pem 
+          #echo $SSH_PEM
+          #echo $SSH_PEM > async-project_key.pem && chmod 400 async-project_key.pem 
           ls -ltr
 
       - name: Test connectivity
-        run: ssh -i async-project_key.pem -o "StrictHostKeyChecking no" ubuntu@$SERVER_ADDRESS "ls -ltr"
+        run: ssh -i ${{ secrets.DEPLOY_KEY }}" -o "StrictHostKeyChecking no" ubuntu@$SERVER_ADDRESS "ls -ltr"
 
       - name: Run unit tests
         run: |
-          ssh -i async-project_key.pem ubuntu@$SERVER_ADDRESS
+          ssh -i ${{ secrets.DEPLOY_KEY }}" ubuntu@$SERVER_ADDRESS
           "cd /usr/src/app/hit-async-programming-proj/backend &&
           npm install --ignore-scripts &&
           npm test"
 
       - name: Deploy services
         run: |
-          ssh -i async-project_key.pem ubuntu@$SERVER_ADDRESS
+          ssh -i ${{ secrets.DEPLOY_KEY }}" ubuntu@$SERVER_ADDRESS
           "systemctl restart backend && 
           systemctl restart frontend &&
           systemctl status backend &&

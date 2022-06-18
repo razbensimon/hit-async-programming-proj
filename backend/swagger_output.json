@@ -5,7 +5,7 @@
     "title": "Costs manager API",
     "description": "RESTful API service for costs management"
   },
-  "host": "ec2-54-221-33-134.compute-1.amazonaws.com:3000",
+  "host": "20.247.96.56:3000",
   "paths": {
     "/api/users": {
       "post": {
