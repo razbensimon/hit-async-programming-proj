@@ -62,15 +62,62 @@ app.post('/api/costs', async (req, res) => {
     description
   });
 
+  const dateObj = new Date(date);
+  const year = dateObj.getFullYear();
+  const month = dateObj.getMonth() + 1;
+
+  let yearly_sum = {
+    [year]: {
+      [category]: parseInt(price)
+    }
+  };
+
+  let monthly_sum = {
+    [year]: {
+      [month]: {
+        [category]: parseInt(price)
+      }
+    }
+  };
+
   try {
     await cost.save();
     console.log('Cost item with ID', cost._id.toString(), 'created');
+
+    const currentUser = await User.findById(user_id);
+    let current_yearly_sum, current_monthly_sum;
+
+    if (currentUser?.year?.category) {
+      console.log(`${year} in object`);
+
+      current_yearly_sum = currentUser['yearly_sum'];
+      current_yearly_sum[year][category] += parseInt(price);
+    }
+    else {
+      console.log('yearly sum not in user');
+      current_yearly_sum = yearly_sum;
+    }
+
+    if (currentUser['monthly_sum']) {
+      console.log('monthly sum in user');
+      current_monthly_sum = currentUser['monthly_sum'];
+      current_monthly_sum[year][month][category] += parseInt(price);
+    }
+    else {
+      console.log('monthly sum not in user');
+      current_monthly_sum = monthly_sum;
+    }
+
+    await User.findByIdAndUpdate(user_id, {yearly_sum: current_yearly_sum, monthly_sum: current_monthly_sum});
+
     res.status(StatusCodes.CREATED).send();
-  } catch (err) {
+  }
+  catch (err) {
     console.error(err);
     if (err?.name === 'ValidationError') {
       res.status(StatusCodes.BAD_REQUEST).send();
-    } else {
+    }
+    else {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
   }

@@ -7,12 +7,18 @@ if (process.env.NODE_ENV !== 'test') {
   mongoose.connect(connection_string);
 }
 
-const User = mongoose.model('User', {
+const userSchema = new mongoose.Schema({
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
   birth_date: { type: Date, required: true },
-  martial_status: { type: String, required: true }
+  martial_status: { type: String, required: true },
+  yearly_sum: { type: mongoose.Schema.Types.Mixed, default: {} },
+  monthly_sum: { type: mongoose.Schema.Types.Mixed, default: {} }
+  }, {
+  minimize: false
 });
+
+const User = mongoose.model('User', userSchema );
 
 const Cost = mongoose.model('Cost', {
   user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
