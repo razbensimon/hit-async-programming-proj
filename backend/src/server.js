@@ -1,7 +1,7 @@
 const express = require('express');
 const Ajv = require('ajv');
 const { StatusCodes } = require('http-status-codes');
-const { User, Cost } = require('./database');
+const { User, Cost, CostsReports } = require('./database');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('../swagger_output.json');
@@ -30,8 +30,15 @@ app.post('/api/users', async (req, res) => {
 
   try {
     await user.save();
-    console.log('User with ID', user._id.toString(), 'created');
-    res.status(StatusCodes.CREATED).send(user._id.toString());
+    let userId = user._id.toString();
+    console.log('User with ID', userId, 'created');
+
+    await new CostsReports({
+      user_id: userId,
+      costs_aggregation: {}
+    }).save();
+
+    res.status(StatusCodes.CREATED).send(userId);
   } catch (err) {
     console.error(err);
     if (err?.name === 'ValidationError') {
@@ -65,59 +72,27 @@ app.post('/api/costs', async (req, res) => {
   const dateObj = new Date(date);
   const year = dateObj.getFullYear();
   const month = dateObj.getMonth() + 1;
-
-  let yearly_sum = {
-    [year]: {
-      [category]: parseInt(price)
-    }
-  };
-
-  let monthly_sum = {
-    [year]: {
-      [month]: {
-        [category]: parseInt(price)
-      }
-    }
-  };
+  ///
 
   try {
     await cost.save();
     console.log('Cost item with ID', cost._id.toString(), 'created');
 
-    const currentUser = await User.findById(user_id);
-    let current_yearly_sum, current_monthly_sum;
-
-    if (currentUser?.year?.category) {
-      console.log(`${year} in object`);
-
-      current_yearly_sum = currentUser['yearly_sum'];
-      current_yearly_sum[year][category] += parseInt(price);
-    }
-    else {
-      console.log('yearly sum not in user');
-      current_yearly_sum = yearly_sum;
-    }
-
-    if (currentUser['monthly_sum']) {
-      console.log('monthly sum in user');
-      current_monthly_sum = currentUser['monthly_sum'];
-      current_monthly_sum[year][month][category] += parseInt(price);
-    }
-    else {
-      console.log('monthly sum not in user');
-      current_monthly_sum = monthly_sum;
-    }
-
-    await User.findByIdAndUpdate(user_id, {yearly_sum: current_yearly_sum, monthly_sum: current_monthly_sum});
+    const options = { upsert: true };
+    const conditions = { user_id };
+    const update = {
+      $inc: {
+        [`costs_aggregation.${year}.${month}.${category}`]: parseInt(price)
+      }
+    };
+    await CostsReports.update(conditions, update, options).exec();
 
     res.status(StatusCodes.CREATED).send();
-  }
-  catch (err) {
+  } catch (err) {
     console.error(err);
     if (err?.name === 'ValidationError') {
       res.status(StatusCodes.BAD_REQUEST).send();
-    }
-    else {
+    } else {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
   }
