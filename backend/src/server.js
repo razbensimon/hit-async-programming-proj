@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const Ajv = require('ajv');
 const { StatusCodes } = require('http-status-codes');
 const { User, Cost, CostsReports } = require('./database');
@@ -8,16 +9,10 @@ const swaggerFile = require('../swagger_output.json');
 const app = express();
 const port = 3000;
 
-const allowCrossDomain = function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-};
+app.use(cors());
+app.use(express.json());
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
-app.use(allowCrossDomain);
-app.use(express.json());
 
 app.post('/api/users', async (req, res) => {
   const { first_name, last_name, martial_status, birth_date } = req.body;
