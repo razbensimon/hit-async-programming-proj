@@ -69,14 +69,13 @@ app.post('/api/costs', async (req, res) => {
     description
   });
 
-  const dateObj = new Date(date);
-  const year = dateObj.getFullYear();
-  const month = dateObj.getMonth() + 1;
-  ///
-
   try {
     await cost.save();
     console.log('Cost item with ID', cost._id.toString(), 'created');
+
+    const dateObj = new Date(date);
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1;
 
     const options = { upsert: true };
     const conditions = { user_id };
@@ -121,6 +120,7 @@ app.get('/api/report', async (req, res) => {
   let { user_id, year, month } = req.query;
 
   try {
+    // validate user id structure
     user_id = mongoose.Types.ObjectId(user_id);
   } catch (err) {
     console.error('user_id is not valid');
@@ -128,45 +128,41 @@ app.get('/api/report', async (req, res) => {
     return;
   }
 
-  let matchQuery = {
-    user_id: user_id,
-    year: Number(year)
-  };
-
-  if (month) {
-    matchQuery.month = Number(month);
-  }
-
   try {
-    let results = await Cost.aggregate([
-      {
-        $addFields: {
-          year: { $year: '$date' },
-          month: { $month: '$date' }
-        }
-      },
-      { $match: matchQuery },
-      {
-        $group: {
-          _id: '$category',
-          count: { $sum: 1 },
-          totalPrice: { $sum: '$price' }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          category: '$_id',
-          count: 1,
-          totalPrice: 1
-        }
-      },
-      {
-        $sort: {
-          totalPrice: -1
+    let matchQuery = { user_id: user_id };
+    let userReport = await CostsReports.findOne(matchQuery)
+      .select(month ? `costs_aggregation.${year}.${month}` : `costs_aggregation.${year}`)
+      .lean() // as simple json
+      .exec();
+
+    // { 1: { food: 35 } }
+
+    let root;
+    if (month) {
+      root = { [year]: userReport.costs_aggregation[year] };
+    } else {
+      root = userReport.costs_aggregation;
+    }
+    const rootEntries = Object.entries(root[year]);
+    console.log(root[year]);
+    console.log(rootEntries);
+
+    const resultDic = {};
+    for (const [month, report] of rootEntries) {
+      for (const [category, monthlyPrice] of Object.entries(report)) {
+        if (resultDic[category]) {
+          resultDic[category] += monthlyPrice;
+        } else {
+          resultDic[category] = monthlyPrice;
         }
       }
-    ]);
+    }
+
+    // ui api:
+    const results = Object.entries(resultDic).map(kvp => {
+      return { category: kvp[0], totalPrice: kvp[1] };
+    });
+
     res.status(StatusCodes.OK).json(results);
   } catch (err) {
     console.error(err);
