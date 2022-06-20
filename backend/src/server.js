@@ -135,7 +135,9 @@ app.get('/api/report', async (req, res) => {
       .lean() // as simple json
       .exec();
 
-    // { 1: { food: 35 } }
+    // Example of date results 👆🏻:
+    // On month exists: { 1: { food: 35 } }
+    // On month NOT exists: { 2022: { 1: { food: 35 } } }
 
     let root;
     if (month) {

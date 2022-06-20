@@ -7,14 +7,14 @@ function Report() {
   const [reportResult, setReportResult] = useState();
   const [barChartResult, setBarChartResult] = useState({
     labels: [],
-    datasets: []
+    datasets: [],
   });
 
   const handleReportSubmit = async (event) => {
     event.preventDefault();
 
     let formData = {
-      user_id: event.target.user_id.value
+      user_id: event.target.user_id.value,
     };
 
     if (event.target.year.value) {
@@ -27,19 +27,20 @@ function Report() {
 
     try {
       const response = await axios.get("http://localhost:3000/api/report", {
-        params: formData
+        params: formData,
       });
-      console.log(response);
+
+      console.log(response.data);
 
       const barChartData = response.data.map((item) => {
         return {
-          display: `${item.category} (${item.count})`,
-          totalPrice: item.totalPrice
+          display: `${item.category}`,
+          totalPrice: item.totalPrice,
         };
       });
 
-      const labels = barChartData.map(item => item.display);
-      const totalPrice = barChartData.map(item => item.totalPrice);
+      const labels = barChartData.map((item) => item.display);
+      const totalPrice = barChartData.map((item) => item.totalPrice);
 
       setBarChartResult({
         labels: labels,
@@ -48,9 +49,9 @@ function Report() {
             data: totalPrice,
             label: "Total Price",
             backgroundColor: "#344440",
-            fill: true
-          }
-        ]
+            fill: true,
+          },
+        ],
       });
     } catch (error) {
       if (error.response.status === 400) {
