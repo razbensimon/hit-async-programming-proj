@@ -31,4 +31,4 @@ node_modules/
 # Webstorm:
 /.idea/
 
-.pem
+*.pem
