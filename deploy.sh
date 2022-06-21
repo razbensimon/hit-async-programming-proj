@@ -1,5 +1,5 @@
 #!/bin/bash
 
 git pull
-systemctl restart backend
-systemctl restart frontend
+sudo systemctl restart backend
+sudo systemctl restart frontend
