@@ -33,3 +33,4 @@ node_modules/
 
 *.pem
 frontend/build
+frontend/.env
