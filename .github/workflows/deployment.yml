@@ -6,8 +6,7 @@ name: Deploy backend and frontend on AWS EC2
 on:
   push:
     branches:
-      - '*'
-      #- '!main'
+      - '!main'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -32,19 +31,7 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.SERVER_ADDRESS }} >> ~/.ssh/known_hosts
 
       - name: Test connectivity
-        run: ssh ubuntu@${{ secrets.SERVER_ADDRESS }} "ls -ltr"
+        run: ssh ubuntu@${{ secrets.SERVER_ADDRESS }} "pwd"
 
-#      - name: Run unit tests
-#        run: |
-#          ssh ubuntu@$SERVER_ADDRESS
-#          "cd /usr/src/app/hit-async-programming-proj/backend &&
-#          npm install --ignore-scripts &&
-#          npm test"
-
-#      - name: Deploy services
-#        run: |
-#          ssh -i "${{ secrets.DEPLOY_KEY }}" ubuntu@$SERVER_ADDRESS
-#          "systemctl restart backend &&
-#          systemctl restart frontend &&
-#          systemctl status backend &&
-#          systemctl status frontend"
+      - name: Deploy services
+        run: ssh ubuntu@${{ secrets.SERVER_ADDRESS }} "cd /usr/src/app/hit-async-programming-proj && bash deploy.sh"
