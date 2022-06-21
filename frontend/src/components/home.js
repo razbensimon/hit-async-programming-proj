@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function Home() {
+  const backendAddress = process.env.BACKEND_ADDRESS || 'localhost:3000'
   const [userResult, setUserResult] = useState();
   const [costResult, setCostResult] = useState();
 
@@ -9,7 +10,7 @@ function Home() {
     event.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:3000/api/users", {
+      const response = await axios.post("http://" + backendAddress + "/api/users", {
           first_name: event.target.first_name.value,
           last_name: event.target.last_name.value,
           martial_status: event.target.martial_status.value,
@@ -37,7 +38,7 @@ function Home() {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/costs",
+      const response = await axios.post("http://" + backendAddress + "/api/costs",
         {
           user_id: event.target.user_id.value,
           date: date,
