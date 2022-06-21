@@ -26,7 +26,10 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PEM }}
-          known_hosts: .ssh/known_hosts
+          known_hosts: 'temp-placeholder'
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SERVER_ADDRESS }} >> ~/.ssh/known_hosts
 
       - name: Test connectivity
         run: ssh ubuntu@${{ secrets.SERVER_ADDRESS }} "ls -ltr"
