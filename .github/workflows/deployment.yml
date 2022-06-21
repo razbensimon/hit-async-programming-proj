@@ -26,9 +26,10 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PEM }}
+          knows_hosts: .ssh/known_hosts
 
       - name: Test connectivity
-        run: ssh -o "StrictHostKeyChecking no" ubuntu@$SERVER_ADDRESS "ls -ltr"
+        run: ssh ubuntu@$SERVER_ADDRESS "ls -ltr"
 
 #      - name: Run unit tests
 #        run: |
