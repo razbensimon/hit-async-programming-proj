@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 function Home() {
-  const backendAddress = process.env.BACKEND_ADDRESS || 'localhost:3000';
+  const backendAddress = process.env.REACT_APP_BACKEND_ADDRESS || 'localhost:3000';
   const [userResult, setUserResult] = useState();
   const [costResult, setCostResult] = useState();
 

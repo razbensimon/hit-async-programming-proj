@@ -4,7 +4,7 @@ import "chart.js/auto";
 import { Bar } from "react-chartjs-2";
 
 function Report() {
-  const backendAddress = process.env.BACKEND_ADDRESS || 'localhost:3000';
+  const backendAddress = process.env.REACT_APP_BACKEND_ADDRESS || 'localhost:3000';
   const [reportResult, setReportResult] = useState();
   const [barChartResult, setBarChartResult] = useState({
     labels: [],
