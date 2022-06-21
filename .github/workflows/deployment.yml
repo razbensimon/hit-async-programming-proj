@@ -35,18 +35,3 @@ jobs:
 
       - name: Deploy services
         run: ssh ubuntu@${{ secrets.SERVER_ADDRESS }} "cd /usr/src/app/hit-async-programming-proj && bash deploy.sh"
-
-#      - name: Run unit tests
-#        run: |
-#          ssh ubuntu@$SERVER_ADDRESS
-#          "cd /usr/src/app/hit-async-programming-proj/backend &&
-#          npm install --ignore-scripts &&
-#          npm test"
-
-#      - name: Deploy services
-#        run: |
-#          ssh -i "${{ secrets.DEPLOY_KEY }}" ubuntu@$SERVER_ADDRESS
-#          "systemctl restart backend &&
-#          systemctl restart frontend &&
-#          systemctl status backend &&
-#          systemctl status frontend"
