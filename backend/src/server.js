@@ -29,8 +29,8 @@ app.post('/api/users', async (req, res) => {
     console.log('User with ID', userId, 'created');
 
     await new CostsReports({
-      user_id: userId,
-      costs_aggregation: {}
+      userId: userId,
+      costsAggregation: {}
     }).save();
 
     res.status(StatusCodes.CREATED).send(userId);
@@ -73,10 +73,10 @@ app.post('/api/costs', async (req, res) => {
     const month = dateObj.getMonth() + 1;
 
     const options = { upsert: true };
-    const conditions = { user_id };
+    const conditions = { userId };
     const update = {
       $inc: {
-        [`costs_aggregation.${year}.${month}.${category}`]: parseInt(price)
+        [`costsAggregation.${year}.${month}.${category}`]: parseInt(price)
       }
     };
     await CostsReports.update(conditions, update, options).exec();
@@ -95,11 +95,11 @@ app.post('/api/costs', async (req, res) => {
 const reportSchema = {
   type: 'object',
   properties: {
-    user_id: { type: 'string' },
+    userId: { type: 'string' },
     year: { type: 'string' },
     month: { type: 'string' }
   },
-  required: ['user_id', 'year']
+  required: ['userId', 'year']
 };
 
 const ajv = new Ajv();
@@ -118,15 +118,15 @@ app.get('/api/report', async (req, res) => {
     // validate user id structure
     userId = mongoose.Types.ObjectId(userId);
   } catch (err) {
-    console.error('user_id is not valid');
+    console.error('userId is not valid');
     res.status(StatusCodes.BAD_REQUEST).send();
     return;
   }
 
   try {
-    let matchQuery = { user_id: userId };
+    let matchQuery = { userId: userId };
     let userReport = await CostsReports.findOne(matchQuery)
-      .select(month ? `costs_aggregation.${year}.${month}` : `costs_aggregation.${year}`)
+      .select(month ? `costsAggregation.${year}.${month}` : `costsAggregation.${year}`)
       .lean() // as simple json
       .exec();
 
