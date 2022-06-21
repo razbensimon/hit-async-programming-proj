@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 if (process.env.NODE_ENV !== 'test') {
-  const mongo_user = process.env.MONGO_USER;
-  const mongo_password = process.env.MONGO_PASSWORD;
-  const connection_string = `mongodb+srv://${mongo_user}:${mongo_password}@async-prog-mongodb.nqvs2.mongodb.net/cost_manager?retryWrites=true&w=majority`;
-  mongoose.connect(connection_string);
+  const mongoUser = process.env.MONGO_USER;
+  const mongoPassword = process.env.MONGO_PASSWORD;
+  const connectionString = `mongodb+srv://${mongoUser}:${mongoPassword}@async-prog-mongodb.nqvs2.mongodb.net/cost_manager?retryWrites=true&w=majority`;
+  mongoose.connect(connectionString);
 }
 
 const User = mongoose.model('User', {

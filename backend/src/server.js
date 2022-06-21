@@ -15,12 +15,12 @@ app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.post('/api/users', async (req, res) => {
-  const { first_name, last_name, martial_status, birth_date } = req.body;
+  const { firstName, lastName, martialStatus, birthDate } = req.body;
   const user = new User({
-    first_name,
-    last_name,
-    birth_date,
-    martial_status
+    firstName,
+    lastName,
+    martialStatus,
+    birthDate
   });
 
   try {
@@ -45,19 +45,19 @@ app.post('/api/users', async (req, res) => {
 });
 
 app.post('/api/costs', async (req, res) => {
-  const { user_id, date, price, description } = req.body;
+  const { userId, date, price, description } = req.body;
   let category = req.body.category.toLowerCase();
 
   try {
-    await User.findById(user_id).exec();
+    await User.findById(userId).exec();
   } catch (err) {
-    console.log('Failed creating cost item, user with ID', user_id, 'does not exist');
+    console.log('Failed creating cost item, user with ID', userId, 'does not exist');
     res.status(StatusCodes.NOT_FOUND).send();
     return;
   }
 
   const cost = new Cost({
-    user_id,
+    userId,
     date,
     price,
     category,
@@ -112,11 +112,11 @@ app.get('/api/report', async (req, res) => {
     return;
   }
 
-  let { user_id, year, month } = req.query;
+  let { userId, year, month } = req.query;
 
   try {
     // validate user id structure
-    user_id = mongoose.Types.ObjectId(user_id);
+    userId = mongoose.Types.ObjectId(userId);
   } catch (err) {
     console.error('user_id is not valid');
     res.status(StatusCodes.BAD_REQUEST).send();
@@ -124,7 +124,7 @@ app.get('/api/report', async (req, res) => {
   }
 
   try {
-    let matchQuery = { user_id: user_id };
+    let matchQuery = { user_id: userId };
     let userReport = await CostsReports.findOne(matchQuery)
       .select(month ? `costs_aggregation.${year}.${month}` : `costs_aggregation.${year}`)
       .lean() // as simple json
