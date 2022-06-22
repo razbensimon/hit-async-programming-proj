@@ -39,7 +39,7 @@ function Home() {
 
     try {
       const response = await axios.post("http://" + backendAddress + "/api/costs", {
-        usedId: event.target.usedId.value,
+        userId: event.target.userId.value,
         date: date,
         price: event.target.price.value,
         category: event.target.category.value,
