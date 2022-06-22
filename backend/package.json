@@ -11,6 +11,7 @@
   },
   "scripts": {
     "start": "node src/server.js",
+    "test": "jest --detectOpenHandles --runInBand",
     "swagger-gen": "node swagger.js"
   },
   "dependencies": {
