@@ -31,7 +31,7 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.SERVER_ADDRESS }} >> ~/.ssh/known_hosts
 
       - name: Test connectivity
-        run: ssh ubuntu@${{ secrets.SERVER_ADDRESS }} "pwd"
+        run: ssh root@${{ secrets.SERVER_ADDRESS }} "pwd"
 
       - name: Deploy services
-        run: ssh ubuntu@${{ secrets.SERVER_ADDRESS }} "cd /usr/src/app/hit-async-programming-proj && bash deploy.sh"
+        run: ssh root@${{ secrets.SERVER_ADDRESS }} "cd /usr/src/app/hit-async-programming-proj && bash deploy.sh"
