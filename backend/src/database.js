@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 if (process.env.NODE_ENV !== 'test') {
+  // Immediate start a connection with the DB, in case we are in production mode. (Not in unit tests environment)
   const mongoUser = process.env.MONGO_USER;
   const mongoPassword = process.env.MONGO_PASSWORD;
   const connectionString = `mongodb+srv://${mongoUser}:${mongoPassword}@async-prog-mongodb.nqvs2.mongodb.net/cost_manager?retryWrites=true&w=majority`;
@@ -27,7 +28,8 @@ const CostsReports = mongoose.model('CostsReports', {
   costsAggregation: { type: mongoose.Schema.Types.Mixed, default: {}, required: true }
 });
 
-// const costsAggregationExample = {
+// Example json of costsAggregation:
+// {
 //   2022: {
 //     1: {
 //       food: 35
@@ -37,7 +39,7 @@ const CostsReports = mongoose.model('CostsReports', {
 //       electric: 404
 //     }
 //   }
-// };
+// }
 //
 
 module.exports = { User, Cost, CostsReports };
