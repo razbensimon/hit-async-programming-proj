@@ -136,9 +136,9 @@ app.get('/api/report', async (req, res) => {
 
     let root;
     if (month) {
-      root = { [year]: userReport.costs_aggregation[year] };
+      root = { [year]: userReport.costsAggregation[year] };
     } else {
-      root = userReport.costs_aggregation;
+      root = userReport.costsAggregation;
     }
     const rootEntries = Object.entries(root[year]);
     console.log(root[year]);
