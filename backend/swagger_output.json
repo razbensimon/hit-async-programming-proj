@@ -17,22 +17,22 @@
             "schema": {
               "type": "object",
               "properties": {
-                "first_name": {
+                "firstName": {
                   "type": "string",
                   "required": "true",
                   "example": "Israel"
                 },
-                "last_name": {
+                "lastName": {
                   "type": "string",
                   "required": "true",
                   "example": "Israeli"
                 },
-                "martial_status": {
+                "martialStatus": {
                   "type": "string",
                   "required": "true",
                   "example": "Single"
                 },
-                "birth_date": {
+                "birthDate": {
                   "type": "string",
                   "required": "true",
                   "example": "1990-06-01"
@@ -64,7 +64,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "user_id": {
+                "userId": {
                   "type": "string",
                   "required": "true",
                   "example": "<user_id_returned_from_create_user>"
@@ -110,7 +110,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "user_id",
+            "name": "userId",
             "required": "true",
             "in": "query",
             "type": "string"

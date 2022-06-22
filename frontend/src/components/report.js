@@ -15,7 +15,7 @@ function Report() {
     event.preventDefault();
 
     let formData = {
-      user_id: event.target.user_id.value,
+      usedId: event.target.usedId.value,
     };
 
     if (event.target.year.value) {

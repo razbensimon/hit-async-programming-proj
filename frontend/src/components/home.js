@@ -11,12 +11,12 @@ function Home() {
 
     try {
       const response = await axios.post("http://" + backendAddress + "/api/users", {
-          first_name: event.target.first_name.value,
-          last_name: event.target.last_name.value,
-          martial_status: event.target.martial_status.value,
-          birth_date: event.target.birth_date.value
-        }
-      );
+        firstName: event.target.firstName.value,
+        lastName: event.target.lastName.value,
+        martialStatus: event.target.martialStatus.value,
+        birthDate: event.target.birthDate.value
+      });
+
       console.log(response);
       setUserResult("User successfully created, your ID is " + response.data);
     } catch (error) {
@@ -38,15 +38,14 @@ function Home() {
     }
 
     try {
-      const response = await axios.post("http://" + backendAddress + "/api/costs",
-        {
-          user_id: event.target.user_id.value,
-          date: date,
-          price: event.target.price.value,
-          category: event.target.category.value,
-          description: event.target.description.value
-        }
-      );
+      const response = await axios.post("http://" + backendAddress + "/api/costs", {
+        usedId: event.target.usedId.value,
+        date: date,
+        price: event.target.price.value,
+        category: event.target.category.value,
+        description: event.target.description.value
+      });
+
       console.log(response);
       setCostResult("Cost item successfully created");
     } catch (error) {
