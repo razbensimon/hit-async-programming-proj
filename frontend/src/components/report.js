@@ -76,13 +76,7 @@ function Report() {
             <br />
             <form onSubmit={handleReportSubmit}>
               User ID:{" "}
-              <input
-                name="user_id"
-                type="text"
-                placeholder="User ID"
-                size="26"
-                required
-              />
+              <input name="userId" type="text" placeholder="User ID" size="26" required />
               <br />
               <br />
               Year:{" "}

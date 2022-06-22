@@ -67,11 +67,11 @@ function Home() {
           <div className="col-lg-6">
             <h1 className="font-weight-light">Add User</h1><br />
             <form onSubmit={handleUserSubmit}>
-              First name: <input name="first_name" type="text" placeholder="First name" required /><br /><br />
-              Last name: <input name="last_name" type="text" placeholder="Last name" required /><br /><br />
-              Martial status: <input name="martial_status" type="text" placeholder="Martial status"
+              First name: <input name="firstName" type="text" placeholder="First name" required /><br /><br />
+              Last name: <input name="lastName" type="text" placeholder="Last name" required /><br /><br />
+              Martial status: <input name="martialStatus" type="text" placeholder="Martial status"
                                      required /><br /><br />
-              Birth date: <input name="birth_date" type="date" placeholder="Birth date (YYYY-MM-DD)"
+              Birth date: <input name="birthDate" type="date" placeholder="Birth date (YYYY-MM-DD)"
                                  required /><br /><br />
               <input type="submit" value="create user" /><br /><br />
               <p className=".text-success">{userResult}</p>
@@ -80,7 +80,7 @@ function Home() {
           <div id="add-cost-div" className="col-lg-6">
             <h1 className="font-weight-light">Add Cost Item</h1><br />
             <form onSubmit={handleCostSubmit}>
-              User ID: <input name="user_id" type="text" placeholder="User ID" size="26" required /><br /><br />
+              User ID: <input name="userId" type="text" placeholder="User ID" size="26" required /><br /><br />
               Date: <input name="date" type="datetime-local" placeholder="Date" /><br /><br />
               Price: <input name="price" type="text" placeholder="Price" required /><br /><br />
               Category: <input name="category" type="text" placeholder="Category" required /><br /><br />
