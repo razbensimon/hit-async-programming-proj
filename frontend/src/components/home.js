@@ -52,7 +52,7 @@ function Home() {
       if (error.response.status === 400) {
         setCostResult("One of the values is missing or incorrect, please try again");
       } else if (error.response.status === 404) {
-        setCostResult("User " + event.target.user_id.value + " does not exist");
+        setCostResult("User " + event.target.userId.value + " does not exist");
       } else {  // HTTP 500
         setCostResult("Internal server error, please try again later...");
       }
