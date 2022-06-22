@@ -15,7 +15,7 @@ function Report() {
     event.preventDefault();
 
     let formData = {
-      user_id: event.target.user_id.value,
+      userId: event.target.userId.value,
     };
 
     if (event.target.year.value) {
@@ -76,13 +76,7 @@ function Report() {
             <br />
             <form onSubmit={handleReportSubmit}>
               User ID:{" "}
-              <input
-                name="user_id"
-                type="text"
-                placeholder="User ID"
-                size="26"
-                required
-              />
+              <input name="userId" type="text" placeholder="User ID" size="26" required />
               <br />
               <br />
               Year:{" "}

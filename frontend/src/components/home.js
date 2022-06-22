@@ -11,12 +11,12 @@ function Home() {
 
     try {
       const response = await axios.post("http://" + backendAddress + "/api/users", {
-          first_name: event.target.first_name.value,
-          last_name: event.target.last_name.value,
-          martial_status: event.target.martial_status.value,
-          birth_date: event.target.birth_date.value
-        }
-      );
+        firstName: event.target.firstName.value,
+        lastName: event.target.lastName.value,
+        martialStatus: event.target.martialStatus.value,
+        birthDate: event.target.birthDate.value
+      });
+
       console.log(response);
       setUserResult("User successfully created, your ID is " + response.data);
     } catch (error) {
@@ -38,15 +38,14 @@ function Home() {
     }
 
     try {
-      const response = await axios.post("http://" + backendAddress + "/api/costs",
-        {
-          user_id: event.target.user_id.value,
-          date: date,
-          price: event.target.price.value,
-          category: event.target.category.value,
-          description: event.target.description.value
-        }
-      );
+      const response = await axios.post("http://" + backendAddress + "/api/costs", {
+        userId: event.target.userId.value,
+        date: date,
+        price: event.target.price.value,
+        category: event.target.category.value,
+        description: event.target.description.value
+      });
+
       console.log(response);
       setCostResult("Cost item successfully created");
     } catch (error) {
@@ -68,11 +67,11 @@ function Home() {
           <div className="col-lg-6">
             <h1 className="font-weight-light">Add User</h1><br />
             <form onSubmit={handleUserSubmit}>
-              First name: <input name="first_name" type="text" placeholder="First name" required /><br /><br />
-              Last name: <input name="last_name" type="text" placeholder="Last name" required /><br /><br />
-              Martial status: <input name="martial_status" type="text" placeholder="Martial status"
+              First name: <input name="firstName" type="text" placeholder="First name" required /><br /><br />
+              Last name: <input name="lastName" type="text" placeholder="Last name" required /><br /><br />
+              Martial status: <input name="martialStatus" type="text" placeholder="Martial status"
                                      required /><br /><br />
-              Birth date: <input name="birth_date" type="date" placeholder="Birth date (YYYY-MM-DD)"
+              Birth date: <input name="birthDate" type="date" placeholder="Birth date (YYYY-MM-DD)"
                                  required /><br /><br />
               <input type="submit" value="create user" /><br /><br />
               <p className=".text-success">{userResult}</p>
@@ -81,7 +80,7 @@ function Home() {
           <div id="add-cost-div" className="col-lg-6">
             <h1 className="font-weight-light">Add Cost Item</h1><br />
             <form onSubmit={handleCostSubmit}>
-              User ID: <input name="user_id" type="text" placeholder="User ID" size="26" required /><br /><br />
+              User ID: <input name="userId" type="text" placeholder="User ID" size="26" required /><br /><br />
               Date: <input name="date" type="datetime-local" placeholder="Date" /><br /><br />
               Price: <input name="price" type="text" placeholder="Price" required /><br /><br />
               Category: <input name="category" type="text" placeholder="Category" required /><br /><br />

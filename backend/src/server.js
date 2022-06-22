@@ -15,12 +15,12 @@ app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.post('/api/users', async (req, res) => {
-  const { first_name, last_name, martial_status, birth_date } = req.body;
+  const { firstName, lastName, martialStatus, birthDate } = req.body;
   const user = new User({
-    first_name,
-    last_name,
-    birth_date,
-    martial_status
+    firstName,
+    lastName,
+    martialStatus,
+    birthDate
   });
 
   try {
@@ -29,8 +29,8 @@ app.post('/api/users', async (req, res) => {
     console.log('User with ID', userId, 'created');
 
     await new CostsReports({
-      user_id: userId,
-      costs_aggregation: {}
+      userId: userId,
+      costsAggregation: {}
     }).save();
 
     res.status(StatusCodes.CREATED).send(userId);
@@ -45,19 +45,19 @@ app.post('/api/users', async (req, res) => {
 });
 
 app.post('/api/costs', async (req, res) => {
-  const { user_id, date, price, description } = req.body;
+  const { userId, date, price, description } = req.body;
   let category = req.body.category.toLowerCase();
 
   try {
-    await User.findById(user_id).exec();
+    await User.findById(userId).exec();
   } catch (err) {
-    console.log('Failed creating cost item, user with ID', user_id, 'does not exist');
+    console.log('Failed creating cost item, user with ID', userId, 'does not exist');
     res.status(StatusCodes.NOT_FOUND).send();
     return;
   }
 
   const cost = new Cost({
-    user_id,
+    userId,
     date,
     price,
     category,
@@ -73,10 +73,10 @@ app.post('/api/costs', async (req, res) => {
     const month = dateObj.getMonth() + 1;
 
     const options = { upsert: true };
-    const conditions = { user_id };
+    const conditions = { userId };
     const update = {
       $inc: {
-        [`costs_aggregation.${year}.${month}.${category}`]: parseInt(price)
+        [`costsAggregation.${year}.${month}.${category}`]: parseInt(price)
       }
     };
     await CostsReports.update(conditions, update, options).exec();
@@ -95,11 +95,11 @@ app.post('/api/costs', async (req, res) => {
 const reportSchema = {
   type: 'object',
   properties: {
-    user_id: { type: 'string' },
+    userId: { type: 'string' },
     year: { type: 'string' },
     month: { type: 'string' }
   },
-  required: ['user_id', 'year']
+  required: ['userId', 'year']
 };
 
 const ajv = new Ajv();
@@ -112,21 +112,21 @@ app.get('/api/report', async (req, res) => {
     return;
   }
 
-  let { user_id, year, month } = req.query;
+  let { userId, year, month } = req.query;
 
   try {
     // validate user id structure
-    user_id = mongoose.Types.ObjectId(user_id);
+    userId = mongoose.Types.ObjectId(userId);
   } catch (err) {
-    console.error('user_id is not valid');
+    console.error('userId is not valid');
     res.status(StatusCodes.BAD_REQUEST).send();
     return;
   }
 
   try {
-    let matchQuery = { user_id: user_id };
+    let matchQuery = { userId: userId };
     let userReport = await CostsReports.findOne(matchQuery)
-      .select(month ? `costs_aggregation.${year}.${month}` : `costs_aggregation.${year}`)
+      .select(month ? `costsAggregation.${year}.${month}` : `costsAggregation.${year}`)
       .lean() // as simple json
       .exec();
 
@@ -136,9 +136,9 @@ app.get('/api/report', async (req, res) => {
 
     let root;
     if (month) {
-      root = { [year]: userReport.costs_aggregation[year] };
+      root = { [year]: userReport.costsAggregation[year] };
     } else {
-      root = userReport.costs_aggregation;
+      root = userReport.costsAggregation;
     }
     const rootEntries = Object.entries(root[year]);
     console.log(root[year]);
