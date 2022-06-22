@@ -1,3 +1,16 @@
+/*
+Team manager:
+Raz Ben Simon
+
+Team members:
+Raz Ben Simon, 312489008, razbensimon2@gmail.com
+Lior Yakobov, 315874610, yakobov.lior@gmail.com
+Or Gelkop, 206895336, or.gelkop123@gmail.com
+
+YouTube link - https://www.youtube.com/watch?v=bUg9kmXtZKw
+ */
+
+
 const express = require('express');
 const cors = require('cors');
 const Ajv = require('ajv');
