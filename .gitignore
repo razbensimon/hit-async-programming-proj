@@ -32,3 +32,5 @@ node_modules/
 /.idea/
 
 *.pem
+frontend/build
+frontend/.env
