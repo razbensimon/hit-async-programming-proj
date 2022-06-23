@@ -156,7 +156,7 @@ const validate = ajv.compile(reportSchema);
  * Get monthly/yearly aggregated costs report for a specific user.
  * @param {string} userId - requested user to calculate the report for
  * @param {number} year - filter data by year
- * @param {number} [month] - Optional filer by month
+ * @param {number} [month] - Optional filter by month
  * @return {Array<{ category: string, totalPrice: number }>} array of results aggregated by category
  */
 app.get('/api/report', async (req, res) => {

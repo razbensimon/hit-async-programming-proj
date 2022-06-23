@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'test') {
   mongoose.connect(connectionString);
 }
 
+// Collections definitions
 const User = mongoose.model('User', {
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
@@ -28,6 +29,8 @@ const CostsReports = mongoose.model('CostsReports', {
   costsAggregation: { type: mongoose.Schema.Types.Mixed, default: {}, required: true }
 });
 
+module.exports = { User, Cost, CostsReports };
+
 // Example json of costsAggregation:
 // {
 //   2022: {
@@ -41,5 +44,3 @@ const CostsReports = mongoose.model('CostsReports', {
 //   }
 // }
 //
-
-module.exports = { User, Cost, CostsReports };
