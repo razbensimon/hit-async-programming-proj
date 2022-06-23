@@ -2,28 +2,17 @@ const request = require('supertest');
 const { StatusCodes } = require('http-status-codes');
 const dbHandler = require('./memory-db-util');
 const { app, server } = require('../server');
-const { User, Cost } = require('../database');
+const { User, CostsReports } = require('../database');
 
-async function prepareDbWithData(costItems) {
+async function prepareDbWithData() {
+  // create dummy user
   const user = new User({
-    first_name: 'mock',
-    last_name: 'mock',
-    birth_date: new Date(),
-    martial_status: 'mock'
+    firstName: 'mock',
+    lastName: 'mock',
+    birthDate: new Date(),
+    martialStatus: 'mock'
   });
   await user.save();
-
-  if (costItems) {
-    const costPromises = costItems.map(item => {
-      const dbItem = new Cost({
-        ...item,
-        user_id: user._id
-      });
-      return dbItem.save();
-    });
-
-    await Promise.all(costPromises);
-  }
 
   return {
     user
@@ -40,10 +29,10 @@ describe('API Tests', () => {
     it('should create a new user item', async () => {
       // arrange
       const userItem = {
-        first_name: 'Israel',
-        last_name: 'Israeli',
-        birth_date: '1/1/1970',
-        martial_status: 'Single'
+        firstName: 'Israel',
+        lastName: 'Israeli',
+        birthDate: '1/1/1970',
+        martialStatus: 'Single'
       };
 
       // act
@@ -56,8 +45,8 @@ describe('API Tests', () => {
     it('should not create user on invalid schema', async () => {
       // arrange
       const userItem = {
-        first_name: 123,
-        last_name: 'Israeli'
+        firstName: 123,
+        lastName: 'Israeli'
       };
 
       // act
@@ -76,7 +65,7 @@ describe('API Tests', () => {
         category: 'food',
         description: 'Schawarma',
         date: new Date().toISOString(),
-        user_id: 'no user'
+        userId: 'no user'
       };
 
       // act
@@ -94,7 +83,7 @@ describe('API Tests', () => {
         category: 'food',
         description: 'Schawarma',
         date: new Date().toISOString(),
-        user_id: user._id
+        userId: user._id
       };
 
       // act
@@ -124,9 +113,9 @@ describe('API Tests', () => {
     it.each`
       badQuery
       ${{ year: '1970', month: '1' }}
-      ${{ user_id: 'TempUserID', month: '1' }}
-      ${{ user_id: 'TempUserID', year: '1970', month: '1', extra: '1' }}
-      ${{ user_id: 'TempUserID', year: 1970, month: 1 }}
+      ${{ userId: 'TempUserID', month: '1' }}
+      ${{ userId: 'TempUserID', year: '1970', month: '1', extra: '1' }}
+      ${{ userId: 'TempUserID', year: 1970, month: 1 }}
     `('should fail on bad schema query sent ($badQuery)', async ({ badQuery }) => {
       // act
       const res = await request(app).get('/api/report').query(badQuery);
@@ -135,11 +124,17 @@ describe('API Tests', () => {
       expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
 
-    it('should get empty costs report for user without items, in specific month and year', async () => {
+    it('should get empty costs report for user without any items (monthly)', async () => {
       // arrange
       const { user } = await prepareDbWithData();
+      const costsReport = new CostsReports({
+        userId: user._id.toString(),
+        costsAggregation: {}
+      });
+      await costsReport.save();
+
       const reportDetailsQuery = {
-        user_id: user._id.toString(),
+        userId: user._id.toString(),
         month: '1',
         year: '1970'
       };
@@ -152,31 +147,87 @@ describe('API Tests', () => {
       expect(res.body).toEqual([]);
     });
 
-    it('should get costs report for user with items, in specific month and year', async () => {
+    it('should get empty costs report for user without any items (yearly)', async () => {
       // arrange
+      const { user } = await prepareDbWithData();
+      const costsReport = new CostsReports({
+        userId: user._id.toString(),
+        costsAggregation: {}
+      });
+      await costsReport.save();
+
+      const reportDetailsQuery = {
+        userId: user._id.toString(),
+        year: '1970'
+      };
+
+      // act
+      const res = await request(app).get('/api/report').query(reportDetailsQuery);
+
+      // assert
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res.body).toEqual([]);
+    });
+
+    it('should get empty costs report for user WITHOUT items, in specific month and year', async () => {
+      // arrange
+      const { user } = await prepareDbWithData();
+      const costsReport = new CostsReports({
+        userId: user._id.toString(),
+        costsAggregation: { 1970: { 2: { food: 100 } } }
+      });
+      await costsReport.save();
+
+      const reportDetailsQuery = {
+        userId: user._id.toString(),
+        month: '1',
+        year: '1970'
+      };
+
+      // act
+      const res = await request(app).get('/api/report').query(reportDetailsQuery);
+
+      // assert
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res.body).toEqual([]);
+    });
+
+    it('should get costs report for user WITH items, in specific month and year', async () => {
+      // arrange
+      const { user } = await prepareDbWithData();
       const costItems = [
         {
+          userId: user._id.toString(),
           date: new Date('1970-01-01T00:00:00Z'),
           price: 100,
           category: 'clothing',
           description: 'shirt'
         },
         {
+          userId: user._id.toString(),
           date: new Date('1970-01-01T00:00:00Z'),
           price: 200,
           category: 'clothing',
           description: 'pants'
         },
         {
+          userId: user._id.toString(),
           date: new Date('1970-01-01T00:00:00Z'),
           price: 2000,
           category: 'electronics',
           description: 'tablet'
         }
       ];
-      const { user } = await prepareDbWithData(costItems);
+
+      // fill data
+      await Promise.all(
+        costItems.map(async costItem => {
+          await request(app).post('/api/costs').send(costItem);
+        })
+      );
+
       const reportDetailsQuery = {
-        user_id: user._id.toString(),
+        userId: user._id.toString(),
         month: '1',
         year: '1970'
       };
@@ -187,18 +238,17 @@ describe('API Tests', () => {
       // assert
       const expectedResult = [
         {
-          count: 1,
           totalPrice: 2000,
           category: 'electronics'
         },
         {
-          count: 2,
           totalPrice: 300,
           category: 'clothing'
         }
       ];
       expect(res.statusCode).toEqual(StatusCodes.OK);
-      expect(res.body).toEqual(expectedResult);
+      expect(res.body.length).toEqual(expectedResult.length);
+      expect(res.body).toEqual(expect.arrayContaining(expectedResult));
     });
   });
 });

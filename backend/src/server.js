@@ -86,7 +86,7 @@ app.post('/api/users', async (req, res) => {
  */
 app.post('/api/costs', async (req, res) => {
   const { userId, date, price, description } = req.body;
-  const category = req.body.category.toLowerCase();
+  const category = req.body.category?.toLowerCase();
 
   // 1. Validate existence of user before attach cost item to him.
   try {
@@ -190,16 +190,23 @@ app.get('/api/report', async (req, res) => {
     // On month exists:     { 1: { food: 35 } }
     // On month NOT exists: { 2022: { 1: { food: 35 } } }
 
-    // 4. Normalize 'monthly' report to be in 'yearly' report structure, for easier logic
+    // 4. Validate report existence
+    if (!userReport) {
+      console.log('User', userId, 'report does not exist');
+      res.status(StatusCodes.NOT_FOUND).send();
+      return;
+    }
+
+    // 5. Normalize 'monthly' report to be in 'yearly' report structure, for easier logic
     let yearReport;
     if (month) {
-      yearReport = { [year]: userReport.costsAggregation[year] }; // wrapping in case on mounth
+      yearReport = { [year]: userReport?.costsAggregation?.[year] ?? {} }; // wrapping in case on month
     } else {
-      yearReport = userReport.costsAggregation;
+      yearReport = userReport.costsAggregation ?? {};
     }
-    const monthsReports = Object.entries(yearReport[year]);
+    const monthsReports = Object.entries(yearReport[year] ?? {});
 
-    // 5. Sum up the results in temp dictionary. So in case of yearly report we sum 12 months.
+    // 6. Sum up the results in temp dictionary. So in case of yearly report we sum 12 months.
     const tempDic = {};
     for (const [monthNumber, monthReport] of monthsReports) {
       for (const [category, monthlyAggregatedPrice] of Object.entries(monthReport)) {
@@ -211,7 +218,7 @@ app.get('/api/report', async (req, res) => {
       }
     }
 
-    // Transformation to Array for pretty API results:
+    // 7. Transformation to Array for pretty API results:
     const results = Object.entries(tempDic).map(kvp => {
       return { category: kvp[0], totalPrice: kvp[1] };
     });
