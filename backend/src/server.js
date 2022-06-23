@@ -3,9 +3,9 @@ Team manager:
 Raz Ben Simon
 
 Team members:
-Raz Ben Simon, 312489008, razbensimon2@gmail.com
-Lior Yakobov,  315874610, yakobov.lior@gmail.com
-Or Gelkop,     206895336, or.gelkop123@gmail.com
+Raz Ben Simon, 312489008, razbensimon2@gmail.com, 052-2932027
+Lior Yakobov,  315874610, yakobov.lior@gmail.com, 054-3451883
+Or Gelkop,     206895336, or.gelkop123@gmail.com, 054-4856135
 
 YouTube link - https://www.youtube.com/watch?v=bUg9kmXtZKw
  */
